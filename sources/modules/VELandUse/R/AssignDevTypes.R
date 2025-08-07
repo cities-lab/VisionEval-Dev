@@ -1,6 +1,7 @@
 #==================
 #AssignDevTypes.R
 #==================
+# Deprecated module: This module is no longer used in the model.
 #
 #<doc>
 #

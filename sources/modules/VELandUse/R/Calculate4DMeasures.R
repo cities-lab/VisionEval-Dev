@@ -1,27 +1,27 @@
-#=====================
-#Calculate4DMeasures.R
-#=====================
+# =====================
+# Calculate4DMeasures.R
+# =====================
 
 #<doc>
 #
 ## Calculate4DMeasures Module
 #### November 6, 2018
 #
-#This module calculates several *4D* measures by Bzone including density, diversity (i.e. mixing of land uses), transportation network design, and destination accessibility. These measures are the same as or are similar to measures included in the Environmental Protection Agency's (EPA) [Smart Location Database](https://www.epa.gov/smartgrowth/smart-location-database-technical-documentation-and-user-guide).
+# This module calculates several *4D* measures by Bzone including density, diversity (i.e. mixing of land uses), transportation network design, and destination accessibility. These measures are the same as or are similar to measures included in the Environmental Protection Agency's (EPA) [Smart Location Database](https://www.epa.gov/smartgrowth/smart-location-database-technical-documentation-and-user-guide).
 #
 ### Model Parameter Estimation
 #
-#This module has no parameters. 4D measures are calculated based on Bzone attributes as described in the next section.
+# This module has no parameters. 4D measures are calculated based on Bzone attributes as described in the next section.
 #
 ### How the Module Works
 #
-#This module calculates 3 development density measures that are named using the names used in the Smart Location Database (SLD): population density (D1B), employment density (D1C), and activity density (D1D). These density measures are calculated at the Bzone level. The population, employment, and activity (employment + households) values to calculate these measures come from the products of other modules. The area data comes from user inputs of the unprotected area (measured in acres) in urban (i.e. urbanized) and rural (i.e. not urbanized) portions of each Bzone.
+# This module calculates 3 development density measures that are named using the names used in the Smart Location Database (SLD): population density (D1B), employment density (D1C), and activity density (D1D). These density measures are calculated at the Bzone level. The population, employment, and activity (employment + households) values to calculate these measures come from the products of other modules. The area data comes from user inputs of the unprotected area (measured in acres) in urban (i.e. urbanized) and rural (i.e. not urbanized) portions of each Bzone.
 #
-#The module calculates 3 development diversity measures which measure the relative heterogeity of land uses in each Bzone. These too are named according to how the SLD names them. D2A_JPHH is the ratio of jobs to households in each Bzone. D2A_WRKEMP is the ratio of workers living in the zone to jobs located in the zone. D2A_EPHHM is an entropy measure calculated from the amount of activity in 4 categories, 3 employment categories (retail, service, other) measured by the number of jobs in the Bzone, and a household category. Entropy is measured on a scale 0 to 1 with 0 corresponding to the situation where only one activity category (or no activity) is present in the Bzone, and 1 corresponding to the situation where there are equal amounts of all activities in the Bzone. Where 2 or more activity categories are present in the Bzone, the entropy of the Bzone is calculated as follows:
+# The module calculates 3 development diversity measures which measure the relative heterogeity of land uses in each Bzone. These too are named according to how the SLD names them. D2A_JPHH is the ratio of jobs to households in each Bzone. D2A_WRKEMP is the ratio of workers living in the zone to jobs located in the zone. D2A_EPHHM is an entropy measure calculated from the amount of activity in 4 categories, 3 employment categories (retail, service, other) measured by the number of jobs in the Bzone, and a household category. Entropy is measured on a scale 0 to 1 with 0 corresponding to the situation where only one activity category (or no activity) is present in the Bzone, and 1 corresponding to the situation where there are equal amounts of all activities in the Bzone. Where 2 or more activity categories are present in the Bzone, the entropy of the Bzone is calculated as follows:
 #
 #  `-sum(R * LogR) / log(NAct)`
 #
-#where:
+# where:
 #
 #- `R` is a vector of the ratio of activity in each activity category divided by the total of all activity
 #
@@ -29,17 +29,17 @@
 #
 #- `NAct` is the number of activity categories (i.e. 4)
 #
-#The module also calculates a destination accessibility measure (D5) which is the harmonic mean of jobs within 2 miles and population within 5 miles of the Bzone centroid. The calculation uses the simplifying assumption that all jobs and all households in a Bzone are located at the Bzone centroid. The straight line distances between all Bzone centroids are calculated from the latitudes and longitudes of the centroids that are provided by the user. For each Bzone, tabulations are made of the number of jobs located in Bzones whose centroids are within 2 miles and the population located in Bzones whose centroids are within 5 miles of the Bzone centroid. The D5 measure for the Bzone is calculated as follows:
+# The module also calculates a destination accessibility measure (D5) which is the harmonic mean of jobs within 2 miles and population within 5 miles of the Bzone centroid. The calculation uses the simplifying assumption that all jobs and all households in a Bzone are located at the Bzone centroid. The straight line distances between all Bzone centroids are calculated from the latitudes and longitudes of the centroids that are provided by the user. For each Bzone, tabulations are made of the number of jobs located in Bzones whose centroids are within 2 miles and the population located in Bzones whose centroids are within 5 miles of the Bzone centroid. The D5 measure for the Bzone is calculated as follows:
 #
 #  `2 * EmpIn2Mi * PopIn5Mi / (EmpIn2Mi + PopIn5Mi)`
 #
-#where:
+# where:
 #
 #- `EmpIn2Mi` is the total number of jobs in Bzones whose centroids are located within 2 miles (straight line distance) of the centroid of the subject Bzone.
 #
 #- `PopIn5Mi` is the total population in Bzones whose centroids are located within 5 miles (straight-line distance) of the centroid of the subject Bzone.
 #
-#One transportation network design measures is produced by the module. D3bpo4 is intersection density in terms of pedestrian-oriented intersections having four or more legs per square mile. This is one of the network design measured in the Smart Location database. Users may pivot off of information from the SLD or may compute the measure using GIS. The SLD calculated values using NAVTEQ (now part of Here) network. The SLD users guide defines pedestrian-oriented facilities as follows:
+# One transportation network design measures is produced by the module. D3bpo4 is intersection density in terms of pedestrian-oriented intersections having four or more legs per square mile. This is one of the network design measured in the Smart Location database. Users may pivot off of information from the SLD or may compute the measure using GIS. The SLD calculated values using NAVTEQ (now part of Here) network. The SLD users guide defines pedestrian-oriented facilities as follows:
 #
 #- Any arterial or local street having a speed category of 6 (between 21 and 30 mph) where car travel is permitted in both directions.
 #
@@ -56,32 +56,33 @@
 #</doc>
 
 
-#=============================================
-#SECTION 1: ESTIMATE AND SAVE MODEL PARAMETERS
-#=============================================
-#This module has no parameters. 4D measures are calculated based on Bzone
-#attributes.
+# =============================================
+# SECTION 1: ESTIMATE AND SAVE MODEL PARAMETERS
+# =============================================
+# This module has no parameters. 4D measures are calculated based on Bzone
+# attributes.
 
 
-#================================================
-#SECTION 2: DEFINE THE MODULE DATA SPECIFICATIONS
-#================================================
+# ================================================
+# SECTION 2: DEFINE THE MODULE DATA SPECIFICATIONS
+# ================================================
 
-#Define the data specifications
+# Define the data specifications
 #------------------------------
 Calculate4DMeasuresSpecifications <- list(
-  #Level of geography module is applied at
+  # Level of geography module is applied at
   RunBy = "Region",
-  #Specify new tables to be created by Inp if any
-  #Specify new tables to be created by Set if any
-  #Specify input data
+  # Specify new tables to be created by Inp if any
+  # Specify new tables to be created by Set if any
+  # Specify input data
   Inp = items(
     item(
       NAME =
         items(
           "UrbanArea",
           "TownArea",
-          "RuralArea"),
+          "RuralArea"
+        ),
       FILE = "bzone_unprotected_area.csv",
       TABLE = "Bzone",
       GROUP = "Year",
@@ -116,7 +117,7 @@ Calculate4DMeasuresSpecifications <- list(
       DESCRIPTION = "Intersection density in terms of pedestrian-oriented intersections having four or more legs per square mile (Ref: EPA 2010 Smart Location Database)"
     )
   ),
-  #Specify data to be loaded from data store
+  # Specify data to be loaded from data store
   Get = items(
     item(
       NAME = "Bzone",
@@ -129,9 +130,11 @@ Calculate4DMeasuresSpecifications <- list(
     ),
     item(
       NAME =
-        items("TotEmp",
-              "RetEmp",
-              "SvcEmp"),
+        items(
+          "TotEmp",
+          "RetEmp",
+          "SvcEmp"
+        ),
       TABLE = "Bzone",
       GROUP = "Year",
       TYPE = "people",
@@ -172,22 +175,9 @@ Calculate4DMeasuresSpecifications <- list(
     item(
       NAME =
         items(
-          "UrbanArea",
-          "TownArea",
-          "RuralArea"),
-      TABLE = "Bzone",
-      GROUP = "Year",
-      TYPE = "area",
-      UNITS = "ACRE",
-      NAVALUE = -1,
-      PROHIBIT = c("NA", "< 0"),
-      ISELEMENTOF = ""
-    ),
-    item(
-      NAME =
-        items(
           "Latitude",
-          "Longitude"),
+          "Longitude"
+        ),
       TABLE = "Bzone",
       GROUP = "Year",
       TYPE = "double",
@@ -197,7 +187,7 @@ Calculate4DMeasuresSpecifications <- list(
       ISELEMENTOF = ""
     )
   ),
-  #Specify data to saved in the data store
+  # Specify data to saved in the data store
   Set = items(
     item(
       NAME = "D1B",
@@ -236,6 +226,17 @@ Calculate4DMeasuresSpecifications <- list(
       DESCRIPTION = "Gross activity density (employment + households) on unprotected land in zone (Ref: EPA 2010 Smart Location Database)"
     ),
     item(
+      NAME = "D1D_hmbuf",
+      TABLE = "Bzone",
+      GROUP = "Year",
+      TYPE = "compound",
+      UNITS = "HHJOB/ACRE",
+      PROHIBIT = "",
+      ISELEMENTOF = "",
+      SIZE = 0,
+      DESCRIPTION = "Gross activity density (employment + households) on unprotected land in zone (Ref: EPA 2010 Smart Location Database) with half mile buffer"
+    ),
+    item(
       NAME = "D2A_JPHH",
       TABLE = "Bzone",
       GROUP = "Year",
@@ -246,6 +247,30 @@ Calculate4DMeasuresSpecifications <- list(
       ISELEMENTOF = "",
       SIZE = 0,
       DESCRIPTION = "Ratio of jobs to households in zone (Ref: EPA 2010 Smart Location Database)"
+    ),
+    item(
+      NAME = "D2A_JPHH_hmbuf",
+      TABLE = "Bzone",
+      GROUP = "Year",
+      TYPE = "compound",
+      UNITS = "JOB/HH",
+      NAVALUE = -1,
+      PROHIBIT = c("NA", "< 0"),
+      ISELEMENTOF = "",
+      SIZE = 0,
+      DESCRIPTION = "Ratio of jobs to households in zone (Ref: EPA 2010 Smart Location Database) with half mile buffer"
+    ),
+    item(
+      NAME = "D2A_JPHH_2mbuf",
+      TABLE = "Bzone",
+      GROUP = "Year",
+      TYPE = "compound",
+      UNITS = "JOB/HH",
+      NAVALUE = -1,
+      PROHIBIT = c("NA", "< 0"),
+      ISELEMENTOF = "",
+      SIZE = 0,
+      DESCRIPTION = "Ratio of jobs to households in zone (Ref: EPA 2010 Smart Location Database) with 2 mile buffer"
     ),
     item(
       NAME = "D2A_WRKEMP",
@@ -287,7 +312,7 @@ Calculate4DMeasuresSpecifications <- list(
 )
 
 
-#Save the data specifications list
+# Save the data specifications list
 #---------------------------------
 #' Specifications list for Calculate4DMeasures module
 #'
@@ -306,7 +331,7 @@ Calculate4DMeasuresSpecifications <- list(
 visioneval::savePackageDataset(Calculate4DMeasuresSpecifications, overwrite = TRUE)
 
 
-#Define a Validation Function for some of the input files
+# Define a Validation Function for some of the input files
 #--------------------------------------------------------
 #' Validation function for checking input files (optional)
 #'
@@ -323,105 +348,42 @@ visioneval::savePackageDataset(Calculate4DMeasuresSpecifications, overwrite = TR
 #' @param Data_df A data.frame loaded from the named file
 #' @return A list of two lists, Errors and Warnings, which will be empty if no errors
 #    were encountered, and will have messages if there were problems.
+#' @import visioneval
+#' @importFrom sf st_as_sf st_buffer st_join st_drop_geometry
+#' @import dplyr
 #' @export
-Calculate4DMeasuresValidateInputFile <- function( File, Data_df ) {
-  FileValidation_ls <- list(Errors=character(0),Warnings=character(0))
-  if ( inherits(Data_df,"data.frame") && is.character(File) && nzchar(File[1]) ) {
-    if ( File == "bzone_unprotected_area.csv" ) {
-      missingValues <- which(
-        {
-          # Error if Total area not specified or zero
-          TotalArea <- with( Data_df, UrbanArea + TownArea + RuralArea )
-          is.na(TotalArea) | TotalArea == 0
-        }
-      )
-      if ( any(missingValues) ) {
+Calculate4DMeasuresValidateInputFile <- function(File, Data_df) {
+  FileValidation_ls <- list(Errors = character(0), Warnings = character(0))
+  if (inherits(Data_df, "data.frame") && is.character(File) && nzchar(File[1])) {
+    if (File == "bzone_unprotected_area.csv") {
+      missingValues <- which({
+        # Error if Total area not specified or zero
+        TotalArea <- with(Data_df, UrbanArea + TownArea + RuralArea)
+        is.na(TotalArea) | TotalArea == 0
+      })
+      if (any(missingValues)) {
         Msg <- paste(
           c(
             "These BZones have no developable land area:",
-            paste0(Data_df$Geo[missingValues],"(",Data_df$Year[missingValues],")")
+            paste0(Data_df$Geo[missingValues], "(", Data_df$Year[missingValues], ")")
           )
         )
-        FileValidation_ls$Errors <- c(FileValidation_ls$Errors,Msg)
+        FileValidation_ls$Errors <- c(FileValidation_ls$Errors, Msg)
       }
     }
   }
   return(FileValidation_ls)
 }
 
-#=======================================================
-#SECTION 3: DEFINE FUNCTIONS THAT IMPLEMENT THE SUBMODEL
-#=======================================================
-#This module calculates several 4D measures by Bzone including density,
-#diversity (i.e. mixing of land uses), design (i.e. multimodal network design),
-#and destination accessibility.
+# =======================================================
+# SECTION 3: DEFINE FUNCTIONS THAT IMPLEMENT THE SUBMODEL
+# =======================================================
+# This module calculates several 4D measures by Bzone including density,
+# diversity (i.e. mixing of land uses), design (i.e. multimodal network design),
+# and destination accessibility.
 
-#Function to sum values for block groups within specified distances
-#-----------------------------------------------------------------
-#' Sum values for block groups within specified distances
-#'
-#' \code{sumValsInDist} sums specified values for block groups whose centroids
-#' are located within a specified distance cutoff.
-#'
-#' This function sums for each block group, a set of block group values of
-#' all the block groups whose centroids are within the specified distance of
-#' the the block group.
-#'
-#' @param DistCutoff A numeric value in miles specifying the straight line
-#' distance in miles to use as the distance threshold.
-#' @param DataToSum_ A numeric vector of the block group values to sum
-#' corresponding to all Bzones.
-#' @param Lat_ A numeric vector of the latitudes of the block group centroids
-#' in the same order as DataToSum_.
-#' @param Lng_ A numeric vector of the longitudes of the block group centroids
-#' in the same order as DataToSum_.
-#' @return A numeric vector of the sums of the values in DataToSum_ for block
-#' groups within the DistanceCutoff of each Bzone.
-#' @import geosphere
-#' @import fields
-sumValsInDist <- function(DistCutoff, DataToSum_, Lat_, Lng_){
-  #Number of Bzones
-  NumBzone <- length(DataToSum_)
-  #Matrix centroid coordinates
-  Coord_mx <- cbind(lng = Lng_, lat = Lat_)
-  #Calculate longitude and latitude ranges corresponding to the maximum distance
-  BufferDist <- DistCutoff * 1609.34  #Maximum distance in meters
-  North <- 0
-  South <- -180
-  East <- 90
-  West <- -90
-  MinLng_ <- geosphere::destPoint(Coord_mx, West, BufferDist)[,1]
-  MaxLng_ <- geosphere::destPoint(Coord_mx, East, BufferDist)[,1]
-  MinLat_ <- geosphere::destPoint(Coord_mx, South, BufferDist)[,2]
-  MaxLat_ <- geosphere::destPoint(Coord_mx, North, BufferDist)[,2]
-  #Define function to sum values for Bzones whose centroids are within the
-  #specified distance cutoff of a Bzone specified by it's position in the inputs
-  sumValsInDist <- function(BzonePos) {
-    Idx_ <- which(
-      (Lat_ > MinLat_[BzonePos]) &
-      (Lat_ < MaxLat_[BzonePos]) &
-      (Lng_ > MinLng_[BzonePos]) &
-      (Lng_ < MaxLng_[BzonePos])
-    )
-    DestLngLat_df <-
-      data.frame(lng = Lng_[Idx_], lat = Lat_[Idx_])
-    OrigLngLat_df <-
-      data.frame(lng = Lng_[BzonePos], lat = Lat_[BzonePos])
-    Dist_ <-
-      fields::rdist.earth(DestLngLat_df, OrigLngLat_df, miles = TRUE, R = 6371)
-    Data_ <- DataToSum_[Idx_]
-    sum(Data_[Dist_ <= DistCutoff])
-  }
-  #Iterate through the Bzones and calculate the values
-  Sums_ <- numeric(NumBzone)
-  for (i in 1:NumBzone) {
-    Sums_[i] <- sumValsInDist(i)
-  }
-  #Return the result
-  Sums_
-}
 
-#Main module function that calculates 4D measures
+# Main module function that calculates 4D measures
 #------------------------------------------------
 #' Main module function that calculates 4D measures for each Bzone.
 #'
@@ -437,72 +399,79 @@ sumValsInDist <- function(DistCutoff, DataToSum_, Lat_, Lng_){
 #' specifications for the module.
 #' @name Calculate4DMeasures
 #' @import visioneval
+#' @import sf
+#' @import dplyr
 #' @export
 Calculate4DMeasures <- function(L) {
-  #Set up
+  # Set up
   #------
-  #Fix seed as synthesis involves sampling
+  # Fix seed as synthesis involves sampling
   set.seed(L$G$Seed)
-  #Define a vector of Bzones
+  # Define a vector of Bzones
   Bz <- L$Year$Bzone$Bzone
-  #Create data frame of Bzone data
+  # Create data frame of Bzone data
   D_df <- data.frame(L$Year$Bzone)
   D_df$Area <- D_df$UrbanArea + D_df$TownArea + D_df$RuralArea
-  #Initialize list
+  # Initialize list
   Out_ls <- initDataList()
 
-  #Calculate density measures
+  # Calculate density measures
   #--------------------------
-  #Population density
+  # Population density
   D1B_ <- with(D_df, Pop / Area)
-  #Check for high population density values and add warning
+  # Check for high population density values and add warning
   # IsHighDensity_ <- D1B_ > 100
-  
+
   # TODO: consolidate package parameter defaults into one place (see HighDensityThreshold)
-  packageParams <- visioneval::getRunParameter("VELandUse",Default=list(HighDensityThreshold=100))
-  HighDensityThreshold_ <- if ( ! "HighDensityThreshold" %in% names(packageParams) ) {
+  packageParams <- visioneval::getRunParameter("VELandUse", Default = list(HighDensityThreshold = 100))
+  HighDensityThreshold_ <- if (!"HighDensityThreshold" %in% names(packageParams)) {
     100 # packageParams might be set but only contain other parameters
-  } else packageParams$HighDensityThreshold
+  } else {
+    packageParams$HighDensityThreshold
+  }
 
   IsHighDensity_ <- D1B_ > HighDensityThreshold_
   if (any(IsHighDensity_)) {
-    HighDensityBzones_ <- paste(Bz[IsHighDensity_],paste0("(",round(D1B_[IsHighDensity_],2),")"))
+    HighDensityBzones_ <- paste(Bz[IsHighDensity_], paste0("(", round(D1B_[IsHighDensity_], 2), ")"))
     Msg <- c(
-      paste0("The following Bzones in the year ", L$G$Year, " ",
-      "have high population densities (greater than ",
-      HighDensityThreshold_," persons per acre):"),
+      paste0(
+        "The following Bzones in the year ", L$G$Year, " ",
+        "have high population densities (greater than ",
+        HighDensityThreshold_, " persons per acre):"
+      ),
       HighDensityBzones_, # This will be a potentially long list in large models...
       "Add 'HighDensityThreshold' to VElandUse section in visioneval.cnf to change warning threshold"
     )
     addWarningMsg(Msg) # Attaches to Out_ls in the current frame by default
-    rm(Msg,HighDensityBzones_)
+    rm(Msg, HighDensityBzones_)
   }
   rm(IsHighDensity_)
-  #Employment density
+  # Employment density
   D1C_ <- with(D_df, TotEmp / Area)
-  #Activity density
+  # Activity density
   D1D_ <- with(D_df, (TotEmp + NumHh) / Area)
 
-  #Calculate diversity measures
+  # Calculate diversity measures
   #----------------------------
-  #Ratio of employment to households
+  # Ratio of employment to households
   D2A_JPHH_ <- with(D_df, TotEmp / NumHh)
   D2A_JPHH_[is.na(D2A_JPHH_) | is.infinite(D2A_JPHH_)] <- 0
-  #Ratio of workers to employment
+  # Ratio of workers to employment
   D2A_WRKEMP_ <- with(D_df, NumWkr / TotEmp)
   D2A_WRKEMP_[is.na(D2A_WRKEMP_) | is.infinite(D2A_WRKEMP_)] <- 0
-  #Employment and household entropy
+  # Employment and household entropy
   D_df$OthEmp <- with(D_df, TotEmp - RetEmp - SvcEmp)
   D_df$TotAct <- with(D_df, TotEmp + NumHh)
   calcEntropyTerm <- function(ActName) {
     Act_ <- D_df[[ActName]]
     ActRatio_ <- Act_ / D_df$TotAct
     ActRatio_[is.na(ActRatio_)] <- 0
-    LogActRatio_ <- rep(0,length(Act_))
+    LogActRatio_ <- rep(0, length(Act_))
     ValidRatio <- !is.na(Act_) & ActRatio_ > 0 & Act_ > 0
     LogActRatio_[ValidRatio] <- log(Act_[ValidRatio] / D_df$TotAct[ValidRatio])
     ActRatio_ * LogActRatio_
   }
+
   E_df <- data.frame(
     Hh = calcEntropyTerm("NumHh"),
     Ret = calcEntropyTerm("RetEmp"),
@@ -510,30 +479,66 @@ Calculate4DMeasures <- function(L) {
     Oth = calcEntropyTerm("OthEmp")
   )
   A_ <- rowSums(E_df)
-  N_ = apply(E_df, 1, function(x) sum(x != 0))
-  D2A_EPHHM_ <- ifelse( is.na(N_)|N_==0, 0, -A_ / log(N_) )
+  N_ <- apply(E_df, 1, function(x) sum(x != 0))
+  D2A_EPHHM_ <- ifelse(is.na(N_) | N_ == 0, 0, -A_ / log(N_))
   rm(E_df, A_, N_)
 
-  #Calculate destination accessibilty term
+  # Calculate destination accessibilty and buffered terms
   #---------------------------------------
-  #Calculate employment within 2 miles
-  EmpIn2Mi_ <-
-    sumValsInDist(DistCutoff = 2,
-                  DataToSum_ = D_df$TotEmp,
-                  Lat_ = D_df$Latitude ,
-                  Lng_ = D_df$Longitude)
-  #Calculate population within 5 miles
-  PopIn5Mi_ <-
-    sumValsInDist(DistCutoff = 5,
-                  DataToSum_ = D_df$Pop,
-                  Lat_ = D_df$Latitude ,
-                  Lng_ = D_df$Longitude)
-  #Calculate regional destination access measure using harmonic mean
-  D5_ <- 2 * EmpIn2Mi_ * PopIn5Mi_ / (EmpIn2Mi_ + PopIn5Mi_)
+  # Calculate employment within 2 miles
+  Bzone_sf <- st_as_sf(D_df,
+    coords = c("Longitude", "Latitude"),
+    crs = 4326
+  )
 
-  #Return list of results
+  BzonehmBuf_sf <- st_buffer(Bzone_sf, dist = 1609.34 / 2) |> select(Bzone) # crs 4326 uses meter as units
+  Bzone2mBuf_sf <- st_buffer(Bzone_sf, dist = 1609.34 * 2) |> select(Bzone)
+  Bzone5mBuf_sf <- st_buffer(Bzone_sf, dist = 1609.34 * 5) |> select(Bzone)
+
+  hmBuf_df <- st_join(BzonehmBuf_sf, Bzone_sf |> select(Area, TotEmp, NumHh, Pop)) |>
+    st_drop_geometry() |>
+    group_by(Bzone) |>
+    summarize(
+      Area_hmbuf = sum(Area),
+      TotEmp_hmbuf = sum(TotEmp),
+      NumHh_hmbuf = sum(NumHh),
+      Pop_hmbuf = sum(Pop),
+      .groups = "drop"
+    ) |>
+    mutate(
+      D1D_hmbuf = (TotEmp_hmbuf + NumHh_hmbuf) / Area_hmbuf,
+      D2A_JPHH_hmbuf = ifelse(NumHh_hmbuf == 0, 0, TotEmp_hmbuf / NumHh_hmbuf)
+    )
+
+  x2mBuf_df <- st_join(Bzone2mBuf_sf, Bzone_sf |> select(TotEmp, NumHh, Pop)) |>
+    st_drop_geometry() |>
+    group_by(Bzone) |>
+    summarize(
+      TotEmp_2mbuf = sum(TotEmp),
+      NumHh_2mbuf = sum(NumHh),
+      Pop_2mbuf = sum(Pop),
+      .groups = "drop"
+    ) |>
+    mutate(D2A_JPHH_2mbuf = ifelse(NumHh_2mbuf == 0, 0, TotEmp_2mbuf / NumHh_2mbuf))
+
+  x5mBuf_df <- st_join(Bzone5mBuf_sf, Bzone_sf |> select(Pop)) |>
+    st_drop_geometry() |>
+    group_by(Bzone) |>
+    summarize(
+      Pop_5mbuf = sum(Pop),
+      .groups = "drop"
+    )
+
+  Bzone_df_ <- D_df |>
+    select(Bzone) |>  # Take Bzone column from D_df, so the results are in the same order as D_df
+    left_join(hmBuf_df, by = "Bzone") |>
+    left_join(x2mBuf_df, by = "Bzone") |>
+    left_join(x5mBuf_df, by = "Bzone") |>
+    mutate(D5 = 2 * TotEmp_2mbuf * Pop_5mbuf / (TotEmp_2mbuf + Pop_5mbuf))
+
+  # Return list of results
   #----------------------
-  #Populate with results
+  # Populate with results
   Out_ls$Year$Bzone <- list(
     D1B = D1B_,
     D1C = D1C_,
@@ -541,23 +546,26 @@ Calculate4DMeasures <- function(L) {
     D2A_JPHH = D2A_JPHH_,
     D2A_WRKEMP = D2A_WRKEMP_,
     D2A_EPHHM = D2A_EPHHM_,
-    D5 = D5_
+    D5 = Bzone_df_$D5,
+    D1D_hmbuf = Bzone_df_$D1D_hmbuf,
+    D2A_JPHH_hmbuf = Bzone_df_$D2A_JPHH_hmbuf,
+    D2A_JPHH_2mbuf = Bzone_df_$D2A_JPHH_2mbuf
   )
-  #Return the results
+  # Return the results
   Out_ls
 }
 
 
-#===============================================================
-#SECTION 4: MODULE DOCUMENTATION AND AUXILLIARY DEVELOPMENT CODE
-#===============================================================
-#Run module automatic documentation
+# ===============================================================
+# SECTION 4: MODULE DOCUMENTATION AND AUXILLIARY DEVELOPMENT CODE
+# ===============================================================
+# Run module automatic documentation
 #----------------------------------
-documentModule("Calculate4DMeasures")
+#documentModule("Calculate4DMeasures")
 
-#Test code to check specifications, loading inputs, and whether datastore
-#contains data needed to run module. Return input list (L) to use for developing
-#module functions
+# Test code to check specifications, loading inputs, and whether datastore
+# contains data needed to run module. Return input list (L) to use for developing
+# module functions
 #-------------------------------------------------------------------------------
 # #Load packages and test functions
 # library(filesstrings)

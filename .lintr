@@ -1,0 +1,25 @@
+# .lintr - VisionEval project linting rules based on api/Coding_Guidelines.md
+linters: with_defaults(
+  # Use '<-' for assignment, disallow '=' for assignment
+  assignment_linter   = assignment_linter("<-"),
+  eq_assign_linter    = eq_assign_linter(),
+  # Limit line length to 80 characters
+  line_length_linter  = line_length_linter(80),
+  # Enforce spaces around infix operators
+  infix_spaces_linter = infix_spaces_linter(),
+  # Require a space after commas
+  commas_linter       = commas_linter(),
+  # Disallow multiple statements on one line
+  semicolon_linter    = semicolon_linter(),
+  # Enforce braces style: opening and closing on their own lines
+  open_curly_linter   = open_curly_linter(),
+  closed_curly_linter = closed_curly_linter(),
+  # Disable commented code checks (roxygen used for function docs)
+  commented_code_linter      = NULL,
+  spaces_left_parentheses_linter = NULL,
+  # Set complexity threshold (optional)
+  cyclocomp_linter    = cyclocomp_linter(15)
+)
+
+# Exclude non-R files or data assets if needed (empty by default)
+exclusions: list()

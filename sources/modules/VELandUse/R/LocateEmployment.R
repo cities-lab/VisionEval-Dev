@@ -94,7 +94,7 @@ LocateEmploymentSpecifications <- list(
       UNITS = "NA",
       NAVALUE = -9999,
       SIZE = 0,
-      PROHIBIT = "NA",
+      PROHIBIT = "",
       ISELEMENTOF = "",
       UNLIKELY = "",
       TOTAL = "",
@@ -305,6 +305,7 @@ visioneval::savePackageDataset(LocateEmploymentSpecifications, overwrite = TRUE)
 #' @export
 adjustEmployment <- function(EmpTarget, Emp_, Names = NULL) {
   EmpProbs_ <- Emp_ / sum(Emp_)
+  EmpProbs_[EmpProbs_ < 0] <- 0.0
   EmpBase_ <- floor(Emp_)
   EmpDiff <- EmpTarget - sum(EmpBase_)
   EmpAdd_ <- Emp_ * 0
@@ -458,7 +459,7 @@ LocateEmployment <- function(L) {
 #===============================================================
 #Run module automatic documentation
 #----------------------------------
-documentModule("LocateEmployment")
+#documentModule("LocateEmployment")
 
 #Test code to check specifications, loading inputs, and whether datastore
 #contains data needed to run module. Return input list (L) to use for developing

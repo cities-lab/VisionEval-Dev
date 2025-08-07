@@ -12,3 +12,42 @@ VERSPM:
       config       : visioneval-ipf.cnf
       stages       : # directories to copy ("virtual stages" are fully defined in visioneval-ipf.cnf
           - inputs-ipf # Just the files used to test IPF
+      
+    velanduse-usecase1:
+      private      : true # it's a test model; not for end user delivery
+      description  : VELandUse Use Case 1
+      defs         : defs
+      inputs       : inputs-base # direct copy of standard VERSPM inputs
+      scripts      : scripts-usecase1
+      config       : visioneval-usecase1.cnf
+      stages       : # directories to copy ("virtual stages" are fully defined in visioneval-usecase1.cnf
+
+    velanduse-usecase2:
+      private      : true # it's a test model; not for end user delivery
+      description  : VELandUse Use Case 2
+      defs         : defs
+      inputs       : inputs-base # direct copy of standard VERSPM inputs
+      scripts      : scripts-usecase2
+      config       : visioneval-usecase2.cnfs
+      stages       : # directories to copy ("virtual stages" are fully defined in visioneval-usecase2.cnf
+          - inputs-usecase2
+
+    velanduse-usecase3.1:
+      private      : true # it's a test model; not for end user delivery
+      description  : VELandUse Use Case 3
+      defs         : defs
+      inputs       : inputs-base # direct copy of standard VERSPM inputs
+      scripts      : scripts-usecase3.1
+      config       : visioneval-usecase3.cnfs
+      stages       : # directories to copy ("virtual stages" are fully defined in visioneval-usecase3.cnf
+          - inputs-usecase3.1
+
+    velanduse-usecase3.2:
+      private      : true # it's a test model; not for end user delivery
+      description  : VELandUse Use Case 3
+      defs         : defs
+      inputs       : inputs-base # direct copy of standard VERSPM inputs
+      scripts      : scripts-usecase3.2
+      config       : visioneval-usecase3.cnfs
+      stages       : # directories to copy ("virtual stages" are fully defined in visioneval-usecase3.cnf
+          - inputs-usecase3.2
